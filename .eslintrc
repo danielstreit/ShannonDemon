@@ -1,0 +1,17 @@
+{
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "ecmaFeatures": {
+    "modules": true
+  },
+  "rules": {
+    "quotes": [2, "single", "avoid-escape"],
+    "curly": [2, "multi-line"],
+    "new-cap": [2, {
+      "capIsNewExceptions": ["Map"]
+    }],
+    "no-use-before-define": [2, "nofunc"]
+  }
+}

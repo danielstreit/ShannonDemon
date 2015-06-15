@@ -1,0 +1,35 @@
+{
+  "name": "ShannonDemon",
+  "version": "0.0.1",
+  "description": "Shannon's Demon",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel/register tests",
+    "build": "npm run clean && npm run verify && npm run mkdirs && npm run build-cjs",
+    "build-cjs": "babel src --out-dir lib",
+    "clean": "rm -rf lib",
+    "lint": "eslint ./src ./tests",
+    "mkdirs": "mkdir -p lib",
+    "start": "npm run build && echo \"Starting Shannon's Demon\" && node ./lib/index.js",
+    "verify": "npm run lint && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielstreit/ShannonDemon.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danielstreit/ShannonDemon/issues"
+  },
+  "homepage": "https://github.com/danielstreit/ShannonDemon",
+  "dependencies": {
+    "coinbase-exchange": "^0.2.0",
+    "immutable": "^3.7.3",
+    "node-uuid": "^1.4.3"
+  },
+  "devDependencies": {
+    "babel": "^5.4.7",
+    "chai": "^2.3.0"
+  }
+}
