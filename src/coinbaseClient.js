@@ -18,19 +18,19 @@ const authedClient = new Coinbase.AuthenticatedClient(
     config.cbexKey, config.cbexSecret, config.cbexPassphrase);
 const websocketClient = new Coinbase.WebsocketClient();
 
-const sentOrders = new Set();
-const recievedOrders = new Set();
+const sentOrders = {};
+const recievedOrders = {};
 
 const tradeEmitter = new EventEmitter();
 
 websocketClient.on('message', message => {
-  if (sentOrders.has(message.client_oid)) {
-    recievedOrders.add(message.order_id);
-    sentOrders.delete(message.client_oid);
+  if (sentOrders[message.client_oid]) {
+    delete sentOrders[message.client_oid];
+    recievedOrders[message.order_id] = true;
   }
 
-  if (recievedOrders.has(message.order_id) && message.type === 'done') {
-    recievedOrders.delete(message.order_id);
+  if (recievedOrders[message.order_id] && message.type === 'done') {
+    delete recievedOrders[message.order_id];
     tradeEmitter.emit('done', message);
   }
 });
@@ -46,6 +46,7 @@ function getOrders() {
 
 function cancelOrder(order) {
   const orderId = typeof order === 'string' ? order : order.id;
+  delete recievedOrders[orderId];
   return new Promise((resolve, reject) => {
     authedClient.cancelOrder(orderId, (err, res, data) => {
       if (err) reject(err);
@@ -81,7 +82,7 @@ function getPosition() {
 
 function sendOrder(order) {
   const clientId = uuid.v4();
-  sentOrders.add(clientId);
+  sentOrders[clientId] = true;
   order = order.set('client_oid', clientId).toJS();
   // Using private method simplifies logic here
   /*eslint no-underscore-dangle: 0*/
